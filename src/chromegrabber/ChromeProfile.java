@@ -1,5 +1,6 @@
 package chromegrabber;
 
+// Data model for each profile
 public class ChromeProfile {
 
     private final String name;
@@ -13,7 +14,7 @@ public class ChromeProfile {
     public String getName() {
         return name;
     }
-
+    
     public String getPath() {
         return id > 0 ? "Profile " + id : "Default";
     }
