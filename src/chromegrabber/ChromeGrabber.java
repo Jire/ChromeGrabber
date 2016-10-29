@@ -1,21 +1,28 @@
 package chromegrabber;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import exceptions.DatabaseException;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 
 public class ChromeGrabber {
 	
 	private ChromeGrabberModel model;
+	private String chosenName = "";
 	
 	// Provides access to all FXML elements
 	@FXML private TableView<ChromeAccount> valuesTable;
@@ -32,6 +39,8 @@ public class ChromeGrabber {
 	@FXML
 	public void onDetectClick() throws IOException, DatabaseException {
 		
+		model.refreshStructures();
+		
 		// Delegate most logic to model, deal with UI elements only
 		model.onGrab();
 		
@@ -42,7 +51,7 @@ public class ChromeGrabber {
 		dialog.setGraphic(new ImageView(new Image("/user.png")));
 		
 		Optional<String> result = dialog.showAndWait();
-		String chosenName = "";
+		
 		if(result.isPresent()) {
 			chosenName = result.get();
 		}
@@ -57,14 +66,49 @@ public class ChromeGrabber {
 		
 		for(ChromeAccount account : newData) {
 			
-			data.add(new ChromeAccount(account.getUsername(), account.getUrl(), account.getPassword()));
+			data.add(new ChromeAccount(account.getUrl(), account.getUsername(), account.getPassword()));
 			
 		}
 	
 		accountLabel.setText("Account Name: " + (model.getChromeAccounts().keySet().toString()).replaceAll("\\[", "").replaceAll("\\]", ""));
 		textLabel.setText(valuesTable.getItems().size() + " saved Google Chrome Accounts found!");
 		
-		model.refreshStructures();
+	}
+	
+	@FXML
+	private void onSaveClick() throws IOException {
+		
+		// Display error if no data has been collected
+		if(model.getChromeAccounts().isEmpty()) {
+			Alert error = new Alert(AlertType.ERROR);
+			error.setTitle("Error!");
+			error.setHeaderText("Error saving accounts!");
+			error.setContentText("Are you sure you've grabbed any data?");
+			error.showAndWait();
+		}else {
+
+			FileChooser chooser = new FileChooser();
+			
+			// Force save as text file
+			FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+			chooser.getExtensionFilters().add(extFilter);
+			
+			File file = chooser.showSaveDialog(null);
+			
+			FileWriter writer = new FileWriter(file);
+			
+			// Make sure there are two defined columns
+			String formatStr = "%-130s %-100s%n";
+			
+			// Write all the data to file in the format specified
+			for(ChromeAccount account : model.getChromeAccounts().get(chosenName.replaceAll("\\[", "").replaceAll("\\]", ""))) {
+				writer.write(String.format(formatStr, account.getUrl(), "[" + account.getUsername() + ":" + account.getPassword() + "]"));
+			}
+			
+			writer.close();
+		}
+		
+		
 	}
 	
 	@FXML
