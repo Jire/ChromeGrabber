@@ -86,26 +86,37 @@ public class ChromeGrabber {
 			error.setContentText("Are you sure you've grabbed any data?");
 			error.showAndWait();
 		}else {
-
-			FileChooser chooser = new FileChooser();
 			
-			// Force save as text file
-			FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-			chooser.getExtensionFilters().add(extFilter);
-			
-			File file = chooser.showSaveDialog(null);
-			
-			FileWriter writer = new FileWriter(file);
-			
-			// Make sure there are two defined columns
-			String formatStr = "%-130s %-100s%n";
-			
-			// Write all the data to file in the format specified
-			for(ChromeAccount account : model.getChromeAccounts().get(chosenName.replaceAll("\\[", "").replaceAll("\\]", ""))) {
-				writer.write(String.format(formatStr, account.getUrl(), "[" + account.getUsername() + ":" + account.getPassword() + "]"));
+			try {
+				FileChooser chooser = new FileChooser();
+				
+				// Force save as text file
+				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+				chooser.getExtensionFilters().add(extFilter);
+				
+				File file = chooser.showSaveDialog(null);
+				
+				FileWriter writer = new FileWriter(file);
+				
+				// Make sure there are two defined columns
+				String formatStr = "%-130s %-100s%n";
+				
+				// Write all the data to file in the format specified
+				for(ChromeAccount account : model.getChromeAccounts().get(chosenName.replaceAll("\\[", "").replaceAll("\\]", ""))) {
+					writer.write(String.format(formatStr, account.getUrl(), "[" + account.getUsername() + ":" + account.getPassword() + "]"));
+				}
+				
+				writer.close();
+				
+				Alert done = new Alert(AlertType.CONFIRMATION);
+				done.setTitle("Save information");
+				done.setHeaderText("File saved");
+				done.setContentText("File has been saved successfully!");
+				done.showAndWait();
+			}catch(IOException ex) {
+				System.out.println("Couldn't save file!");
 			}
 			
-			writer.close();
 		}
 		
 		
