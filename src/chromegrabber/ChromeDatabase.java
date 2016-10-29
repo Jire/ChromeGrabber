@@ -93,7 +93,7 @@ public class ChromeDatabase {
 					url = results.getString("action_url");
 					username = results.getString("username_value");
 					password = ChromeSecurity.getChromePasswords(results.getBytes("password_value"));
-					accounts.add(new ChromeAccount(username, url, password));
+					accounts.add(new ChromeAccount(url, username, password));
 				}catch (final DatabaseException ex) {
 					throw new DatabaseException("Error processing Chrome database: " + ex);
 				}
