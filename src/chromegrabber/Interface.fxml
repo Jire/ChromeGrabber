@@ -33,8 +33,9 @@
           <fx:reference source="urlColumn" />
      	</sortOrder> 
       </TableView>
-      <Button fx:id="detectBtn" layoutX="398.0" layoutY="420.0" mnemonicParsing="false" onAction="#onDetectClick" prefHeight="62.0" prefWidth="188.0" text="Grab Accounts" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="15.0" />
+      <Button fx:id="detectBtn" layoutX="359.0" layoutY="419.0" mnemonicParsing="false" onAction="#onDetectClick" prefHeight="62.0" prefWidth="109.0" text="Grab Accounts" AnchorPane.bottomAnchor="9.0" AnchorPane.rightAnchor="133.0" />
       <Label fx:id="textLabel" layoutX="16.0" layoutY="429.0" prefHeight="17.0" prefWidth="365.0" text="0 Google Chrome accounts loaded" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="16.0" />
       <Label fx:id="accountLabel" layoutX="16.0" layoutY="455.0" prefHeight="17.0" prefWidth="365.0" text="Account Name:" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="16.0" />
+      <Button fx:id="saveBtn" layoutX="477.0" layoutY="419.0" mnemonicParsing="false" onAction="#onSaveClick" prefHeight="62.0" prefWidth="109.0" text="Save to file" AnchorPane.bottomAnchor="9.0" AnchorPane.rightAnchor="15.0" />
    </children>
 </AnchorPane>
