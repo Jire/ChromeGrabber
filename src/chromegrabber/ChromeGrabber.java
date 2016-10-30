@@ -37,7 +37,7 @@ public class ChromeGrabber {
 	}
 	
 	@FXML
-	public void onDetectClick() throws IOException, DatabaseException {
+	private void onDetectClick() throws IOException, DatabaseException {
 		
 		model.refreshStructures();
 		
