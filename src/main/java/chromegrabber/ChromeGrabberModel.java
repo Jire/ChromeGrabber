@@ -18,9 +18,11 @@ import javafx.collections.ObservableList;
 
 public final class ChromeGrabberModel {
 
-	private final String CHROME_PATH = System.getProperty("user.home")
+	private static final String CHROME_PATH = System.getProperty("user.home")
 			+ File.separator
 			+ "AppData\\Local\\Google\\Chrome\\User Data\\";
+
+	private static final String PROFILE_MATCH = ",\"Profile ";
 
 	private final Map<String, List<ChromeAccount>> chromeAccounts = new HashMap<>();
 	private final List<String> profileNames = new ArrayList<>();
@@ -90,7 +92,7 @@ public final class ChromeGrabberModel {
 		int numberOfProfiles = 0;
 
 		// This pattern of text appears at the start of the description of a new Profile
-		Pattern p = Pattern.compile(",\"Profile ");
+		Pattern p = Pattern.compile(PROFILE_MATCH);
 		Matcher m = p.matcher(profilesString);
 
 		while (m.find()) {
@@ -105,14 +107,19 @@ public final class ChromeGrabberModel {
 
 		// Splits the 'profilesString' String so that each profile has it's own String which is then added to 'profileInfo'
 		if (numberOfProfiles == 2) {
-			profileInfo.add(profilesString.substring(0, profilesString.indexOf(",\"Profile ")));
-			profileInfo.add(profilesString.substring(profilesString.indexOf(",\"Profile ")));
+			profileInfo.add(profilesString.substring(0, profilesString.indexOf(PROFILE_MATCH)));
+			profileInfo.add(profilesString.substring(profilesString.indexOf(PROFILE_MATCH)));
 		} else if (numberOfProfiles > 2) {
 			List<Integer> indexList = new ArrayList<>();
-			profileInfo.add(profilesString.substring(0, profilesString.indexOf(",\"Profile ")));
-			for (int index = profilesString.indexOf(",\"Profile "); index >= 0; index = profilesString.indexOf(",\"Profile ", index + 1)) {
+			profileInfo.add(profilesString.substring(0, profilesString.indexOf(PROFILE_MATCH)));
+
+			for (int index = profilesString.indexOf(PROFILE_MATCH);
+			     index >= 0;
+			     index = profilesString.indexOf(PROFILE_MATCH, index + 1)) {
+
 				indexList.add(index);
 			}
+
 			for (int i = 0; i < indexList.size() - 1; i++) {
 				profileInfo.add(profilesString.substring(indexList.get(i), indexList.get(i) + 1));
 			}
