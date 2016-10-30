@@ -70,7 +70,7 @@ public class ChromeGrabber {
 			
 		}
 	
-		accountLabel.setText("Account Name: " + (model.getChromeAccounts().keySet().toString()).replaceAll("\\[", "").replaceAll("\\]", ""));
+		accountLabel.setText("Account Name: " + chosenName.replaceAll("\\[", "").replaceAll("\\]", ""));
 		textLabel.setText(valuesTable.getItems().size() + " saved Google Chrome Accounts found!");
 		
 	}
