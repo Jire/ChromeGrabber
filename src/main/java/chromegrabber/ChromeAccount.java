@@ -1,28 +1,29 @@
 package chromegrabber;
+
 import javafx.beans.property.SimpleStringProperty;
 
-public class ChromeAccount {
-	
-	private final SimpleStringProperty Url = new SimpleStringProperty("");
-	private final SimpleStringProperty username = new SimpleStringProperty("");
-	private final SimpleStringProperty password = new SimpleStringProperty("");
-	
-	public ChromeAccount(final String Url, final String username, final String password) {
-		
+public final class ChromeAccount {
+
+	private static final String DEFAULT_PROPERTY_VALUE = "";
+
+	private final SimpleStringProperty url = new SimpleStringProperty(DEFAULT_PROPERTY_VALUE);
+	private final SimpleStringProperty username = new SimpleStringProperty(DEFAULT_PROPERTY_VALUE);
+	private final SimpleStringProperty password = new SimpleStringProperty(DEFAULT_PROPERTY_VALUE);
+
+	public ChromeAccount(String Url, String username, String password) {
 		setUrl(Url);
 		setUsername(username);
 		setPassword(password);
-		
 	}
-	
+
 	public ChromeAccount() {
-		this("","","");
+		this(DEFAULT_PROPERTY_VALUE, DEFAULT_PROPERTY_VALUE, DEFAULT_PROPERTY_VALUE);
 	}
-	
+
 	public String getUrl() {
-		return Url.get();
+		return url.get();
 	}
-	
+
 	public String getUsername() {
 		return username.get();
 	}
@@ -30,15 +31,15 @@ public class ChromeAccount {
 	public String getPassword() {
 		return password.get();
 	}
-	
+
 	public void setUrl(String iUrl) {
-		Url.set(iUrl);
+		url.set(iUrl);
 	}
-	
+
 	public void setUsername(String iUsername) {
 		username.set(iUsername);
 	}
-	
+
 	public void setPassword(String iPassword) {
 		password.set(iPassword);
 	}
