@@ -1,0 +1,13 @@
+apply plugin: 'idea'
+apply plugin: 'java'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile group: 'net.java.dev.jna', name: 'jna', version: '4.2.2'
+	compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.2.2'
+
+	compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.14.2.1'
+}
