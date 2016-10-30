@@ -1,4 +1,5 @@
 package chromegrabber;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,96 +18,91 @@ import chromegrabber.exceptions.DatabaseException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class ChromeDatabase {
-	
+public final class ChromeDatabase {
+
 	private final Connection connection;
 
-	public static ChromeDatabase connect(final File database) throws DatabaseConnectionException {
-		
+	public static ChromeDatabase connect(File database) throws DatabaseConnectionException {
+
 		Path tempDB;
-		
+
 		try {
 			tempDB = Files.createTempFile("CHROME_LOGIN_", null);
-			final FileOutputStream out = new FileOutputStream(tempDB.toFile());
+			FileOutputStream out = new FileOutputStream(tempDB.toFile());
 			Files.copy(Paths.get(database.getPath()), out);
 			out.close();
 			tempDB.toFile().deleteOnExit();
-		} catch(IOException ex) {
+		} catch (IOException ex) {
 			throw new DatabaseConnectionException("Error copying database: " + ex);
 		}
-		
+
 		Connection db;
-		
+
 		try {
-			final SQLiteConfig config = new SQLiteConfig();
+			SQLiteConfig config = new SQLiteConfig();
 			config.setReadOnly(true);
-			
+
 			config.setTransactionMode(TransactionMode.EXCLUSIVE);
-			db = config.createConnection("jdbc:sqlite:" + tempDB.toString());
+			db = config.createConnection("jdbc:sqlite:" + tempDB);
 			db.setAutoCommit(true);
-		} catch(final SQLException ex) {
+		} catch (SQLException ex) {
 			throw new DatabaseConnectionException("Error connecting to database: " + ex);
 		}
-		
+
 		return new ChromeDatabase(db);
 	}
-	
-	
-	
-	private ChromeDatabase(final Connection connection) {
+
+	private ChromeDatabase(Connection connection) {
 		this.connection = connection;
 	}
-	
+
 	public void close() {
-        try {
-            connection.close();
-        } catch (final SQLException ex) {
-        	System.out.println("Error closing connection: " + ex);
-        }
-    }
-	
-	public ObservableList<ChromeAccount> selectAccounts()
-			throws DatabaseException {
-		
+		try {
+			connection.close();
+		} catch (SQLException ex) {
+			System.err.println("Error closing connection: " + ex);
+		}
+	}
+
+	public ObservableList<ChromeAccount> selectAccounts() throws DatabaseException {
+
 		// Make sure we're connected
 		try {
-			if(connection.isClosed()) {
-				throw new DatabaseException("Database connectionb not opened!");
+			if (connection.isClosed()) {
+				throw new DatabaseException("Database connection not opened!");
 			}
-		} catch (final SQLException ex) {
+		} catch (SQLException ex) {
 			throw new DatabaseException("Error checking the state of database connection: " + ex);
 		}
-		
+
 		// Store each account in the List
-		final ObservableList<ChromeAccount> accounts = FXCollections.observableArrayList();
-		
+		ObservableList<ChromeAccount> accounts = FXCollections.observableArrayList();
+
 		try {
 			// Temporary ResultSet to get data from database
-			final ResultSet results = connection
+			ResultSet results = connection
 					.createStatement()
-					.executeQuery(
-							"SELECT action_url, username_value, password_value FROM logins");
-			
-			while(results.next()) {
+					.executeQuery("SELECT action_url, username_value, password_value FROM logins");
+
+			while (results.next()) {
 				String url, username, password;
 				try {
 					url = results.getString("action_url");
 					username = results.getString("username_value");
 					password = ChromeSecurity.getChromePasswords(results.getBytes("password_value"));
 					accounts.add(new ChromeAccount(url, username, password));
-				}catch (final DatabaseException ex) {
+				} catch (DatabaseException ex) {
 					throw new DatabaseException("Error processing Chrome database: " + ex);
 				}
 			}
+
 			results.close();
 			results.getStatement().close();
-		}catch (final SQLException ex) {
+		} catch (SQLException ex) {
 			throw new DatabaseException("Error reading database, is it corrupted? " + ex);
 		}
-		
+
 		return accounts;
 	}
-	
-	
-	
+
 }
