@@ -1,6 +1,7 @@
 package chromegrabber;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -71,7 +72,7 @@ public class ChromeGrabberModel {
 		
 	}
 	
-	public static ArrayList<ChromeProfile> readProfiles(final String[] infoLines) {
+	public static ArrayList<ChromeProfile> readProfiles(final String[] infoLines) throws IOException {
 		
 		// List of ChromeProfile Objects to be returned
 		final List<ChromeProfile> profiles = new ArrayList<>();
@@ -121,7 +122,7 @@ public class ChromeGrabberModel {
 		
 		// For each profile in the List, trim the String to get the most meaningful profile name and then add it along with it's ID to 'profiles'
 		for(int i = 0; i < profileInfo.size(); i++) {
-			final int firstIndex = profileInfo.get(i).indexOf(",\"shortcut_name\":") + 18;
+			final int firstIndex = profileInfo.get(i).indexOf(",\"user_name\":") + 14;
 			final int lastIndex = profileInfo.get(i).indexOf("\"", firstIndex);
 			profiles.add(new ChromeProfile(i, (profileInfo.get(i)).substring(firstIndex, lastIndex)));
 		}
