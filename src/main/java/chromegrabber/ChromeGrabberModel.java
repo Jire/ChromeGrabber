@@ -57,18 +57,19 @@ public final class ChromeGrabberModel {
 		for (ChromeProfile profile : profiles) {
 			profileNames.add(profile.getName());
 		}
-
 	}
 
-	// Uses the ChromeDatabase class to gather URL's, usernames and passwords, wrap the data as a collection of ChromeAccount's and then returns
-	public static ObservableList<ChromeAccount> readDatabase(final File data) throws DatabaseException {
+	public List<String> getProfileNames() {
+		return profileNames;
+	}
 
-		final ChromeDatabase db = ChromeDatabase.connect(data);
-		final ObservableList<ChromeAccount> accounts = db.selectAccounts();
-		db.close();
+	public Map<String, List<ChromeAccount>> getChromeAccounts() {
+		return chromeAccounts;
+	}
 
-		return accounts;
-
+	public void refreshStructures() {
+		chromeAccounts.clear();
+		profileNames.clear();
 	}
 
 	public static List<ChromeProfile> readProfiles(String[] infoLines) throws IOException {
@@ -79,7 +80,7 @@ public final class ChromeGrabberModel {
 		// Reference to this string needed outside of for loop
 		String profilesString = "";
 
-		// Get rid of loop later but it removes unnecessary noise from 'infoLines'   
+		// Get rid of loop later but it removes unnecessary noise from 'infoLines'
 		for (int i = 0; i < infoLines.length; i++) {
 			int begin_index = infoLines[i].indexOf(",\"profile\":{\"info_cache\":{") + 27;
 			int end_index = infoLines[i].indexOf(",\"last_active_profiles\":") - 2;
@@ -121,26 +122,24 @@ public final class ChromeGrabberModel {
 
 		// For each profile in the List, trim the String to get the most meaningful profile name and then add it along with it's ID to 'profiles'
 		for (int i = 0; i < profileInfo.size(); i++) {
-			final int firstIndex = profileInfo.get(i).indexOf(",\"user_name\":") + 14;
-			final int lastIndex = profileInfo.get(i).indexOf("\"", firstIndex);
+			int firstIndex = profileInfo.get(i).indexOf(",\"user_name\":") + 14;
+			int lastIndex = profileInfo.get(i).indexOf("\"", firstIndex);
 			profiles.add(new ChromeProfile(i, (profileInfo.get(i)).substring(firstIndex, lastIndex)));
 		}
 
 		return profiles;
-
 	}
 
-	public List<String> getProfileNames() {
-		return profileNames;
-	}
+	/**
+	 * Uses the ChromeDatabase class to gather URL's, usernames and passwords,
+	 * wrap the data as a collection of ChromeAccount's and then returns
+	 */
+	public static ObservableList<ChromeAccount> readDatabase(final File data) throws DatabaseException {
+		ChromeDatabase db = ChromeDatabase.connect(data);
+		ObservableList<ChromeAccount> accounts = db.selectAccounts();
+		db.close();
 
-	public Map<String, List<ChromeAccount>> getChromeAccounts() {
-		return chromeAccounts;
-	}
-
-	public void refreshStructures() {
-		chromeAccounts.clear();
-		profileNames.clear();
+		return accounts;
 	}
 
 }
