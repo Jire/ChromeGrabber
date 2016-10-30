@@ -71,7 +71,7 @@ public class ChromeGrabber {
 		}
 	
 		accountLabel.setText("Account Name: " + chosenName.replaceAll("\\[", "").replaceAll("\\]", ""));
-		textLabel.setText(valuesTable.getItems().size() + " saved Google Chrome Accounts found!");
+		textLabel.setText(valuesTable.getItems().size() + " saved passwords found!");
 		
 	}
 	
